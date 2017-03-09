@@ -51,4 +51,49 @@ class CurrentWeather {
         }
         return _currentTemp
     }
+
+    
+    
+    func dwnWeatherDetails(completed: DownloadComplete) {
+        // Alamorefire Download
+        let currentWeatherURL = URL(string: current_weather_url)!
+        
+        Alamofire.request(currentWeatherURL).responseJSON { response in
+            let result = response.result
+            print(response)
+        } 
+        completed()
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+

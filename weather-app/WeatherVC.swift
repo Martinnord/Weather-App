@@ -16,8 +16,9 @@ class WeatherVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     @IBOutlet weak var currentLocationLabel: UILabel!
     @IBOutlet weak var curentWeatherImage: UIImageView!
     @IBOutlet weak var currentWeatherTypeLabel: UILabel!
-    
     @IBOutlet weak var tableView: UITableView!
+    
+    var currentWeather = CurrentWeather()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,6 +26,11 @@ class WeatherVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
         // Set up the delegate and datasource
         tableView.delegate = self
         tableView.dataSource = self
+        
+        currentWeather.dwnWeatherDetails {
+            // Setup UI to load data
+        }
+        
     }
     
     //Required delegate methods for table views

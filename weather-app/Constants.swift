@@ -8,8 +8,13 @@
 
 import Foundation
 
-let baseUrl = "openweathermap.org/data/2.5/weather?"
+let baseUrl = "http://api.openweathermap.org/data/2.5/weather?"
 let lat = "lat="
-let long = "&long="
-let appID = "&appid"
+let long = "&lon="
+let appID = "&appid="
 let APIKey = "d8f274c2281319a7eeca5d5f847a53f8"
+
+// Creating an exsiting type
+typealias DownloadComplete = () -> ()
+
+let current_weather_url = "\(baseUrl)\(lat)59.334591\(long)18.063240\(appID)\(APIKey)"
