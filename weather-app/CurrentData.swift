@@ -47,14 +47,14 @@ class CurrentWeather {
     
     var currentTemp: Double {
         if _currentTemp == nil {
-            _currentTemp = 0.0
+            _currentTemp = 0.1
         }
         return _currentTemp
     }
 
     
     
-    func dwnWeatherDetails(completed: DownloadComplete) {
+    func dwnWeatherDetails(completed: @escaping DownloadComplete) {
         // Alamorefire Download
         let currentWeatherURL = URL(string: current_weather_url)!
         
@@ -66,6 +66,7 @@ class CurrentWeather {
                 // City name
                 if let name = dict["name"] as? String  {
                     self._cityName = name.capitalized
+                    print(self._cityName)
                 }
                 
                 // Weather type
@@ -73,6 +74,7 @@ class CurrentWeather {
                     
                     if let main = weather[0]["main"] as? String {
                         self._weatherType = main.capitalized
+                        print(self._weatherType)
                     }
                 }
                 
@@ -93,24 +95,6 @@ class CurrentWeather {
         } 
         completed()
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
 }
 
 
