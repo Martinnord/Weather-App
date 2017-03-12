@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Alamofire
 
 class WeatherVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
@@ -14,11 +15,13 @@ class WeatherVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     @IBOutlet weak var dateLabel: UILabel!
     @IBOutlet weak var currentTempLabel: UILabel!
     @IBOutlet weak var currentLocationLabel: UILabel!
-    @IBOutlet weak var curentWeatherImage: UIImageView!
+    @IBOutlet weak var currentWeatherImage: UIImageView!
     @IBOutlet weak var currentWeatherTypeLabel: UILabel!
     @IBOutlet weak var tableView: UITableView!
     
-    var currentWeather = CurrentWeather()
+    var currentWeather: CurrentWeather!
+    var forecast: Forecast!
+    var forecasts = [Forecast]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,12 +31,40 @@ class WeatherVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
         tableView.dataSource = self
         
         currentWeather = CurrentWeather()
+        
+        
         currentWeather.dwnWeatherDetails {
-            self.updateMainUI()
             // Setup UI to load data
+            self.dnwForcastData {
+                self.updateMainUI()
+            }
         }
         
     }
+    
+    func dnwForcastData(completed: @escaping DownloadComplete) {
+        // Downloading the data for the tableview
+        let forecast_url = URL(string: forecast_URLL)!
+        Alamofire.request(forecast_url).responseJSON { respone in
+            let result = respone.result
+        
+            if let dict = result.value as? Dictionary <String, AnyObject> {
+              
+                if let list = dict["list"] as? [Dictionary <String, AnyObject>] {
+                
+                    // Everytime a dictionary is found in an array, the dictionary will be passed into another dictionary (my head hurts).
+                    for obj in list {
+                        let forecast = Forecast(weatherDict: obj)
+                        self.forecasts.append(forecast)
+                        print(obj)
+                }
+                self.forecasts.remove(at: 0)
+                self.tableView.reloadData()
+            }
+        }
+        completed()
+    }
+}
     
     //Required delegate methods for table views
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -41,12 +72,18 @@ class WeatherVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 6
+        return forecasts.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "weatherCell", for: indexPath)
-        return cell
+       
+        if let cell = tableView.dequeueReusableCell(withIdentifier: "weatherCell", for: indexPath) as? WeatherCell {
+            let forcast = forecasts[indexPath.row]
+            cell.configureCell(forcast: forcast)
+            return cell
+        } else {
+            return WeatherCell()
+        }
     }
     
     func updateMainUI() {
@@ -54,7 +91,7 @@ class WeatherVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
         currentTempLabel.text = "\(currentWeather.currentTemp)"
         currentWeatherTypeLabel.text = currentWeather.weatherType
         currentLocationLabel.text = currentWeather._cityName
-        curentWeatherImage.image = UIImage(named: currentWeather.weatherType)
+        currentWeatherImage.image = UIImage(named: currentWeather.weatherType)
     }
     
     
