@@ -44,5 +44,7 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>We need to have your locatoin to showcase the weather.</string>
 </dict>
 </plist>

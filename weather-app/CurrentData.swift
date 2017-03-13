@@ -47,7 +47,7 @@ class CurrentWeather {
     
     var currentTemp: Double {
         if _currentTemp == nil {
-            _currentTemp = 0.0
+           _currentTemp = 0.0
         }
         return _currentTemp
     }
@@ -55,13 +55,11 @@ class CurrentWeather {
     
     
     func dwnWeatherDetails(completed: @escaping DownloadComplete) {
-        // Alamorefire Download
-        let currentWeatherURL = URL(string: current_weather_url)!
-        
-        Alamofire.request(currentWeatherURL).responseJSON { response in
+        // Alamorefire Download        
+        Alamofire.request(current_weather_url).responseJSON { response in
             let result = response.result
-            
-            if let dict = result.value as? Dictionary <String, AnyObject> { // What's inside will be casts as strings
+            print(response)
+            if let dict = result.value as? Dictionary<String, AnyObject> { // What's inside will be casts as strings
                
                 // City name
                 if let name = dict["name"] as? String  {
@@ -70,29 +68,27 @@ class CurrentWeather {
                 }
                 
                 // Weather type
-                if let weather = dict["weather"] as? [Dictionary <String, AnyObject>] {
+                if let weather = dict["weather"] as? [Dictionary<String, AnyObject>] {
                     
                     if let main = weather[0]["main"] as? String {
                         self._weatherType = main.capitalized
-                        print(self._weatherType)
                     }
                 }
                 
                 // Current temp
-                if let main = dict["main"] as? Dictionary <String, AnyObject> {
+                if let main = dict["main"] as? Dictionary<String, AnyObject> {
                     
                     if let temp = main["temp"] as? Double {
                         
                         let kelvinToCelsius = temp - 273.15
 
-                        self._currentTemp = kelvinToCelsius
+                        self._currentTemp = kelvinToCelsius.roundTo(places: 2)
                         
-                        print(kelvinToCelsius)
                     }
                 }
-                
+                completed()
             }
-            completed()
+
         }
     }
 }

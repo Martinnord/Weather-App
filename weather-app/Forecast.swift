@@ -51,12 +51,12 @@ class Forecast {
             
             if let min = temp["min"] as? Double {
                 let kelvinToCelsius = min - 273.15
-                self._lowTemp = "\(kelvinToCelsius)"
+                self._lowTemp = "\(kelvinToCelsius.roundTo(places: 2))"
             }
             
             if let max = temp["max"] as? Double {
                 let kelvinToCelsius = max - 273.15
-                self._highTemp = "\(kelvinToCelsius)"
+                self._highTemp = "\(kelvinToCelsius.roundTo(places: 2))"
                 
             }
             
