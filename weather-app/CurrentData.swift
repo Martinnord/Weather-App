@@ -49,6 +49,7 @@ class CurrentWeather {
         if _currentTemp == nil {
            _currentTemp = 0.0
         }
+        
         return _currentTemp
     }
 
@@ -80,7 +81,7 @@ class CurrentWeather {
                     
                     if let temp = main["temp"] as? Double {
                         
-                        let kelvinToCelsius = temp - 273.15
+                        let kelvinToCelsius = temp - 272.15
 
                         self._currentTemp = kelvinToCelsius.roundTo(places: 2)
                         

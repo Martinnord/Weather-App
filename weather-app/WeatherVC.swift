@@ -23,6 +23,7 @@ class WeatherVC: UIViewController, UITableViewDelegate, UITableViewDataSource, C
     var locationManager = CLLocationManager()
     var currentLocation: CLLocation!
     
+    var refresher: UIRefreshControl!
     
     var currentWeather: CurrentWeather!
     var forecast: Forecast!
@@ -35,6 +36,11 @@ class WeatherVC: UIViewController, UITableViewDelegate, UITableViewDataSource, C
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.requestWhenInUseAuthorization()
         locationManager.startMonitoringSignificantLocationChanges()
+        
+        refresher = UIRefreshControl()
+        refresher.attributedTitle = NSAttributedString(string: "Refresh the weather!")
+        refresher.addTarget(self, action: #selector(WeatherVC.locationAuthStatus), for: UIControlEvents.valueChanged)
+        tableView.addSubview(refresher)
         
         // Set up the delegate and datasource
         tableView.delegate = self
@@ -56,12 +62,10 @@ class WeatherVC: UIViewController, UITableViewDelegate, UITableViewDataSource, C
             Location.sharedInstance.longitude = currentLocation.coordinate.longitude
             currentWeather.dwnWeatherDetails {
                 self.dnwForcastData {
-                    self.updateMainUI()
+                self.updateMainUI()
                 }
             }
         } else {
-            locationManager.requestWhenInUseAuthorization()
-            locationAuthStatus()
         }
         
     }
@@ -81,13 +85,14 @@ class WeatherVC: UIViewController, UITableViewDelegate, UITableViewDataSource, C
                         self.forecasts.append(forecast)
                         //print(obj)
                 }
-                self.forecasts.remove(at: 0)
-                self.tableView.reloadData()
+                /*self.forecasts.remove(at: 0)
+                self.tableView.reloadData()*/
             }
         }
         completed()
     }
 }
+
     
     //Required delegate methods for table views
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -107,6 +112,7 @@ class WeatherVC: UIViewController, UITableViewDelegate, UITableViewDataSource, C
         } else {
             return WeatherCell()
         }
+    
     }
     
     func updateMainUI() {
@@ -115,6 +121,8 @@ class WeatherVC: UIViewController, UITableViewDelegate, UITableViewDataSource, C
         currentWeatherTypeLabel.text = currentWeather.weatherType
         currentLocationLabel.text = currentWeather.cityName
         currentWeatherImage.image = UIImage(named: currentWeather.weatherType)
+        refresher.endRefreshing()
+        tableView.reloadData()
     }
 }
 
